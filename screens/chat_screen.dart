@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import '../widgets/chat_bubble.dart';
 import '../models/message_model.dart';
 
-const String baseUrl = 'https://ttmchatbot-2.onrender.com'; // ✅ Render 백엔드 주소
+const String baseUrl = 'https://ttmchatbot-4.onrender.com'; // ✅ Render 백엔드 주소
 
 class ChatScreen extends StatefulWidget {
   final String buddyName;
