@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'chat_screen.dart';
 
 // ✅ 실제 배포된 Render 백엔드 주소로 교체하세요
-const String baseUrl = 'https://ttmchatbot-2.onrender.com';
+const String baseUrl = 'https://ttmchatbot-737295793059.asia-northeast3.run.app';
 
 class LoadingScreen extends StatefulWidget {
   final String buddyName;

@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../widgets/chat_bubble.dart';
 import '../models/message_model.dart';
+import 'package:uuid/uuid.dart'; // ✅ UUID 생성용
 
-const String baseUrl = 'https://ttmchatbot-2.onrender.com'; // ✅ Render 백엔드 주소
+const String baseUrl = 'https://ttmchatbot-737295793059.asia-northeast3.run.app';
 
 class ChatScreen extends StatefulWidget {
   final String buddyName;
@@ -20,7 +21,10 @@ class _ChatScreenState extends State<ChatScreen> {
     const Message(text: "지금 느끼는 감정을 자세히 말해주시겠어요?", isUser: false)
   ];
 
-  Map<String, dynamic> agentState = {
+  final String sessionId = const Uuid().v4(); // ✅ 고유 세션 ID 생성
+
+  late Map<String, dynamic> agentState = {
+    "session_id": sessionId, // ✅ 필수 필드 추가됨
     "stage": "empathy",
     "question": "",
     "response": "",
@@ -50,7 +54,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     final request = http.Request(
       'POST',
-      Uri.parse('$baseUrl/chat/stream'), // ✅ 정확한 엔드포인트
+      Uri.parse('$baseUrl/chat/stream'),
     );
     request.headers.addAll({'Content-Type': 'application/json'});
     request.body = jsonEncode({"state": agentState});
@@ -66,29 +70,17 @@ class _ChatScreenState extends State<ChatScreen> {
             final jsonPart = parts.length > 1 ? parts[1].trim() : "";
 
             if (textPart.isNotEmpty) {
-              if (_messages.isEmpty || _messages.last.text != textPart) {
-                _currentStreamingText += textPart;
-                _updateLastAssistantMessage(_currentStreamingText.trim());
-              }
+              _currentStreamingText += textPart;
+              _updateLastAssistantMessage(_currentStreamingText.trim());
             }
 
             try {
               final next = jsonDecode(jsonPart);
-              if (next.containsKey("next_stage")) {
-                agentState["stage"] = next["next_stage"];
-              }
-              if (next.containsKey("turn")) {
-                agentState["turn"] = next["turn"];
-              }
-              if (next.containsKey("response")) {
-                agentState["response"] = next["response"];
-              }
-              if (next.containsKey("history")) {
-                agentState["history"] = next["history"];
-              }
-              if (next.containsKey("intro_shown")) {
-                agentState["intro_shown"] = next["intro_shown"];
-              }
+              agentState["stage"] = next["next_stage"];
+              agentState["turn"] = next["turn"];
+              agentState["response"] = next["response"];
+              agentState["history"] = next["history"];
+              agentState["intro_shown"] = next["intro_shown"];
             } catch (e) {
               print("⚠️ 상태 JSON 파싱 오류: $e");
             }
@@ -194,4 +186,3 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 }
-

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/loading_screen.dart';
+import 'screens/chat_screen.dart'; // ✅ ChatScreen을 import하세요
 
 void main() {
   runApp(const MyApp());
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'TTM Chatbot',
       debugShowCheckedModeBanner: false,
-      home: const LoadingScreen(buddyName: "소영봇"),
+      home: const ChatScreen(buddyName: "소영봇"), // ✅ 바로 ChatScreen으로 진입
     );
   }
 }
